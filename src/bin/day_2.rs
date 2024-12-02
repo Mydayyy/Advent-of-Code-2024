@@ -45,14 +45,11 @@ fn main() {
 
     let reports = parse_input_matrix::<i32>(input);
 
-    let mut sum1 = 0;
-    let mut sum2 = 0;
-
-    sum1 = reports
+    let sum1 = reports
         .iter()
         .filter(|report| is_report_safe(report, false))
         .count() as i32;
-    sum2 = reports
+    let sum2 = reports
         .iter()
         .filter(|report| is_report_safe(report, true))
         .count() as i32;
