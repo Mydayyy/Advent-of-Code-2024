@@ -25,7 +25,7 @@ fn is_report_safe(report: &Vec<i32>, with_deletion: bool) -> bool {
         return false;
     }
 
-    let mut initial_diff = report[0] - report[1];
+    let initial_diff = report[0] - report[1];
 
     for i in 0..report.len() - 1 {
         let diff = report[i] - report[i + 1];
