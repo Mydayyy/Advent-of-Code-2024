@@ -42,10 +42,8 @@ fn is_report_safe(report: &Vec<i32>, with_deletion: bool) -> bool {
 }
 fn main() {
     let input = get_input(2, false);
-    println!("{:?}", input);
 
     let reports = parse_input_matrix::<i32>(input);
-    println!("{:?}", reports);
 
     let mut sum1 = 0;
     let mut sum2 = 0;
