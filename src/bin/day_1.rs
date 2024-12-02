@@ -1,7 +1,7 @@
 use aoc24::{parse_input_lines_into_pairs, get_input};
 
 fn main() {
-    let input = get_input(1);
+    let input = get_input(1, false);
     let input2 = parse_input_lines_into_pairs(input);
 
     let (mut lista, mut listb): (Vec<i32>, Vec<i32>) = input2.iter().cloned().unzip();
