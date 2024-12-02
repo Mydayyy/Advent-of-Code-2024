@@ -19,16 +19,14 @@ pub fn parse_input_lines_into_pairs(input: String) -> Vec<(i32, i32)> {
         .collect();
 }
 
-
-pub fn parse_input_matrix<T: FromStr>(input: String) -> Vec<Vec<T>> 
+pub fn parse_input_matrix<T: FromStr>(input: String) -> Vec<Vec<T>>
 where
     T::Err: std::fmt::Debug,
 {
     input
         .lines()
         .map(|line| {
-            line
-                .split_whitespace()
+            line.split_whitespace()
                 .map(|x| x.parse::<T>().unwrap())
                 .collect()
         })

@@ -1,4 +1,4 @@
-use aoc24::{parse_input_lines_into_pairs, get_input};
+use aoc24::{get_input, parse_input_lines_into_pairs};
 
 fn main() {
     let input = get_input(1, false);
@@ -8,9 +8,11 @@ fn main() {
     lista.sort();
     listb.sort();
     let combined_list: Vec<_> = lista.iter().zip(listb.iter()).collect();
-    let list_differences = combined_list.iter().map(|line| (line.0 - line.1).abs()).collect::<Vec<i32>>();
+    let list_differences = combined_list
+        .iter()
+        .map(|line| (line.0 - line.1).abs())
+        .collect::<Vec<i32>>();
     let sum1 = list_differences.iter().sum::<i32>();
-
 
     let mut sum2 = 0;
     for i in 0..lista.len() {
