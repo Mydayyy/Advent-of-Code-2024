@@ -1,24 +1,17 @@
 use aoc24::{get_input, parse_input_matrix};
-use std::collections::HashMap;
-
-#[derive(Debug)]
-enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
+use std::collections::HashSet;
 
 #[derive(Debug)]
 struct Map {
     map: Vec<Vec<char>>,
     pos_guard: (i32, i32),
     direction: (i32, i32),
+    visited: HashSet<(i32, i32)>,
 }
 
 impl Map {
-    fn new(input: String) -> Self {
-        let mut map = parse_input_matrix(input);
+    fn new(input: &str) -> Self {
+        let mut map = parse_input_matrix(input.parse().unwrap());
         let position = map
             .iter()
             .enumerate()
@@ -32,12 +25,12 @@ impl Map {
                 })
             })
             .unwrap();
-        println!("{}", map[position.1 as usize][position.0 as usize]);
         map[position.1 as usize][position.0 as usize] = 'X';
         Self {
             map,
             pos_guard: position,
             direction: (0, -1),
+            visited: Default::default(),
         }
     }
 
@@ -61,6 +54,7 @@ impl Map {
         } else {
             self.pos_guard = next_position;
             self.map[self.pos_guard.1 as usize][self.pos_guard.0 as usize] = 'X';
+            self.visited.insert(self.pos_guard);
         }
 
         true
@@ -75,24 +69,65 @@ impl Map {
             _ => panic!("invalid direction"),
         };
     }
+
+    fn simulate_obstruction(&mut self, x: i32, y: i32) -> bool {
+        if self.pos_guard == (x, y) {
+            return false;
+        }
+
+        let original_char = self.map[y as usize][x as usize];
+
+        self.map[y as usize][x as usize] = '#';
+
+        let is_loop = self.is_guard_in_loop();
+
+        self.map[y as usize][x as usize] = original_char;
+
+        is_loop
+    }
+
+    fn is_guard_in_loop(&mut self) -> bool {
+        let original_pos_guard = self.pos_guard;
+        let original_direction = self.direction;
+        let mut visited_locations: HashSet<((i32, i32), (i32, i32))> = HashSet::new();
+
+        while self.tick() {
+            if visited_locations.contains(&(self.pos_guard, self.direction)) {
+                self.pos_guard = original_pos_guard;
+                self.direction = original_direction;
+                return true;
+            }
+            visited_locations.insert((self.pos_guard, self.direction));
+        }
+
+        self.pos_guard = original_pos_guard;
+        self.direction = original_direction;
+
+        false
+    }
 }
 
 fn main() {
     let input = get_input(6, false);
-    let sum2 = 0;
-    // println!("map: \n{}", input);
+    let mut sum2 = 0;
 
-    let mut map = Map::new(input);
+    let mut map = Map::new(&input);
 
-    while map.tick() {
-        // println!("map: \n{:?}", map);
+    while map.tick() {}
+
+    let sum1: i32 = map
+        .map
+        .iter()
+        .map(|row| row.iter().filter(|&&ch| ch == 'X').count() as i32)
+        .sum();
+
+    let visited = map.visited.clone();
+
+    map = Map::new(&input);
+    for (x, y) in visited {
+        sum2 += if map.simulate_obstruction(x, y) { 1 } else { 0 };
     }
 
-    let sum1: i32 = map.map.iter().map(|row| {
-        row.iter().filter(|&&ch| ch == 'X').count() as i32
-    }).sum();
-
-    // println!("map: {:?}", map);
     println!("sum1: {}", sum1);
     println!("sum2: {}", sum2);
 }
